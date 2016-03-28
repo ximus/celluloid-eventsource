@@ -1,3 +1,4 @@
+require 'celluloid/current'
 require "celluloid/eventsource/version"
 require 'celluloid/io'
 require 'celluloid/eventsource/response_parser'
@@ -56,9 +57,8 @@ module Celluloid
       establish_connection
 
       chunked? ? process_chunked_stream : process_stream
-    rescue IOError
-      # Closing the socket during read causes this exception and kills the actor
-      # We really don't wan to do anything if the socket is closed.
+    rescue 
+      after(1){ listen }
     end
 
     def close
