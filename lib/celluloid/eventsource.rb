@@ -1,3 +1,4 @@
+require 'celluloid/current'
 require "celluloid/eventsource/version"
 require 'celluloid/io'
 require 'celluloid/eventsource/response_parser'

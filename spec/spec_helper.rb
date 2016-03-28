@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 
+require 'celluloid/current'
 require 'celluloid/test'
 require 'celluloid/eventsource'
 
