@@ -30,7 +30,7 @@ module Celluloid
 
       @last_event_id = String.new
 
-      @reconnect_timeout = 10
+      @reconnect_timeout = 1
       @on = { open: ->{}, message: ->(_) {}, error: ->(_) {} }
       @parser = ResponseParser.new
 
@@ -57,8 +57,8 @@ module Celluloid
       establish_connection
 
       chunked? ? process_chunked_stream : process_stream
-    rescue 
-      after(1){ listen }
+    ensure
+      after(@reconnect_timeout){ listen }
     end
 
     def close
