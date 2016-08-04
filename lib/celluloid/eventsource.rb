@@ -54,11 +54,15 @@ module Celluloid
     end
 
     def listen
-      establish_connection
-
-      chunked? ? process_chunked_stream : process_stream
-    ensure
-      after(@reconnect_timeout){ listen }
+      while !closed?
+        begin
+          establish_connection
+          chunked? ? process_chunked_stream : process_stream
+        rescue
+          # Just reconnect
+        end
+        sleep @reconnect_timeout        
+      end
     end
 
     def close
@@ -108,7 +112,9 @@ module Celluloid
         until @socket.eof?
           @parser << @socket.readline
         end
-        close
+        # If the server returns a non-200, we don't want to close-- we just want to
+        # report an error
+        # close
         @on[:error].call({status_code: @parser.status_code, body: @parser.chunk})
         return
       end
